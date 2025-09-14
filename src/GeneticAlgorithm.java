@@ -98,6 +98,12 @@ public class GeneticAlgorithm {
 
         for (int i=0; i< route.size()-1; i++){
             totalDistance = totalDistance + unconnectedGraph.get(route.get(i)).distanceTo(unconnectedGraph.get(route.get(i+1)));
+
+
+            //CANT FIX BUG OF LEAVING PATHS, so heavily penalise it
+            if (edgeRelationshipMatrix[route.get(i)][route.get(i+1)]!= 1){
+                totalDistance = totalDistance + 10000000;
+            }
         }
 
         return totalDistance;
