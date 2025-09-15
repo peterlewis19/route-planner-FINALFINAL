@@ -7,8 +7,8 @@ public class Canvas extends JComponent {
 
     private ArrayList<Node> allNodes;
     private int[][] adjMatrix;
-    private double HORIZONTAL_SCALE_FACTOR = 0.9;
-    private double VERTICAL_SCALE_FACTOR = 0.8;
+    private double HORIZONTAL_SCALE_FACTOR = 1;
+    private double VERTICAL_SCALE_FACTOR = 0.95;
     private ArrayList<Integer> generatedRoute;
 
     public Canvas(ArrayList<Node> allNodes, int[][] adjMatrix, ArrayList<Integer> generatedRoute){
@@ -50,14 +50,13 @@ public class Canvas extends JComponent {
 
         // Set line color and thickness
         g2d.setColor(Color.BLACK);
-        g2d.setBackground(Color.pink);
         g2d.setStroke(new BasicStroke(5)); // Line thickness = 2
 
         //just drawing dots, so start and end X and Y will be the same
         for (int i=0; i < allNodes.size(); i++){
 
-            int startY = (int) ((VERTICAL_SCALE_FACTOR*allNodes.get(i).getX()));
-            int startX = (int) ((HORIZONTAL_SCALE_FACTOR*allNodes.get(i).getY()));
+            int startX = (int) ((HORIZONTAL_SCALE_FACTOR*allNodes.get(i).getX()));
+            int startY = (int) ((VERTICAL_SCALE_FACTOR*allNodes.get(i).getY())+10);
 
             int endY = startY ;
             int endX = startX;
@@ -78,30 +77,16 @@ public class Canvas extends JComponent {
             for (int j = i; j < adjMatrix[0].length; j++){
                 //if the row and column share an edge
                 if (adjMatrix[i][j] == 1){
-                    int startY = (int) (VERTICAL_SCALE_FACTOR*allNodes.get(i).getX()) ;
-                    int startX = (int) (HORIZONTAL_SCALE_FACTOR*allNodes.get(i).getY());
+                    int startX = (int) (HORIZONTAL_SCALE_FACTOR*allNodes.get(i).getX()) ;
+                    int startY = (int) (VERTICAL_SCALE_FACTOR*allNodes.get(i).getY()+10);
 
-                    int endY = (int) (VERTICAL_SCALE_FACTOR*allNodes.get(j).getX());
-                    int endX = (int) (HORIZONTAL_SCALE_FACTOR*allNodes.get(j).getY());
+                    int endX = (int) (HORIZONTAL_SCALE_FACTOR*allNodes.get(j).getX());
+                    int endY = (int) (VERTICAL_SCALE_FACTOR*allNodes.get(j).getY()+10);
 
                     g.drawLine(startX, startY, endX, endY);
                 }
             }
         }
-    }
-
-    public static BufferedImage getScreenShot(
-            Component component) {
-
-        BufferedImage image = new BufferedImage(
-                component.getWidth(),
-                component.getHeight(),
-                BufferedImage.TYPE_INT_RGB
-        );
-        // call the Component's paint method, using
-        // the Graphics object of the image.
-        component.paint( image.getGraphics() ); // alternately use .printAll(..)
-        return image;
     }
 }
 

@@ -6,8 +6,8 @@ public class RouteCanvas extends JComponent {
 
     private ArrayList<Node> allNodes;
     private int[][] adjMatrix;
-    private double HORIZONTAL_SCALE_FACTOR = 0.8;
-    private double VERTICAL_SCALE_FACTOR = 0.9;
+    private double HORIZONTAL_SCALE_FACTOR = 1;
+    private double VERTICAL_SCALE_FACTOR = 0.95;
     private static ArrayList<Integer> generatedRoute;
 
     public RouteCanvas(ArrayList<Integer> generatedRoute, ArrayList<Node> allNodes){
@@ -55,12 +55,12 @@ public class RouteCanvas extends JComponent {
         //draw the route assuming lines are connected
         for (int i = 0; i < generatedRoute.size()-1; i++){
             int startX = (int)(HORIZONTAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i)).getX());
-            int startY = (int)(VERTICAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i)).getY());
+            int startY = (int)(VERTICAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i)).getY()+10);
 
             int endX = (int)(HORIZONTAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i+1)).getX());
-            int endY = (int)(VERTICAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i+1)).getY());
+            int endY = (int)(VERTICAL_SCALE_FACTOR*allNodes.get(generatedRoute.get(i+1)).getY()+10);
 
-            g2d.drawLine(startY, startX, endY, endX);
+            g2d.drawLine(startX, startY, endX, endY);
         }
 
         System.out.println("DRAWING ROUTE");
