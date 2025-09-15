@@ -2,13 +2,7 @@ import java.util.*;
 
 public class MainLoopOfGA {
     private ArrayList<Integer> bestRoute;
-    public MainLoopOfGA(int START_INDEX, int END_INDEX){
-        //ArrayList<Node> unconnectedMapOfCoords = FileHandler.readNodesFromFile("\\\\BEX-FILE-01\\studenthome$\\19\\19lewis_p\\COMP SCI IA\\mapOfCoords500.txt");
-        //int[][] edgeRelationMatrix = FileHandler.readMatrixFromFile("\\\\BEX-FILE-01\\studenthome$\\19\\19lewis_p\\COMP SCI IA\\adjacencyMatrix500.txt", unconnectedMapOfCoords.size());
-
-        ArrayList<Node> unconnectedMapOfCoords = FileHandler.readNodesFromFile("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\500mapOfCoords.txt");
-        int[][] edgeRelationMatrix = FileHandler.readMatrixFromFile("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\500edgeRelations.txt", unconnectedMapOfCoords.size());
-
+    public MainLoopOfGA(int START_INDEX, int END_INDEX,ArrayList<Node> unconnectedMapOfCoords,int[][] edgeRelationMatrix){
         GeneticAlgorithm ga = new GeneticAlgorithm(unconnectedMapOfCoords, edgeRelationMatrix);
 
         int routesPerGeneration = 100;

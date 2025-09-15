@@ -98,7 +98,7 @@ public class GUI extends JFrame {
                         System.out.println("ERROR IN INPUT");
                         createOutOfRangeWindow();
                     } else {
-                        MainLoopOfGA newGA = new MainLoopOfGA(Integer.parseInt(startEntry.getText()), Integer.parseInt(destinationEntry.getText()));
+                        MainLoopOfGA newGA = new MainLoopOfGA(Integer.parseInt(startEntry.getText()), Integer.parseInt(destinationEntry.getText()), allNodes, adjMatrix);
                         ArrayList<Integer> bestRoute = newGA.getBestRoute();
 
                         generatedRoute = bestRoute;
@@ -122,6 +122,20 @@ public class GUI extends JFrame {
                                     screenshot,
                                     "png",
                                     new File("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\screenshot.png"));
+
+                            //Printing this screenshot out
+                            PrinterJob job = PrinterJob.getPrinterJob();
+                            job.setPrintable(new Printing(screenshot));
+                            boolean doPrint = job.printDialog();
+
+                            if (doPrint) {
+                                try {
+                                    job.print();
+                                } catch (PrinterException exc) {
+                                    // The job did not successfully
+                                    // complete
+                                }
+                            }
                         } catch(Exception err) {
                             err.printStackTrace();
                         }
@@ -133,14 +147,6 @@ public class GUI extends JFrame {
 
                 //route is found much faster, but this delays it by a lot (roughly 30 seconds)
                 // i think theres no way of avoiding this, so I just made more generations to ensure an optimal route still within the time
-                PrinterJob pj = PrinterJob.getPrinterJob();
-
-                if (pj.printDialog()) {
-                    try {pj.print();}
-                    catch (PrinterException exc) {
-                        System.out.println(exc);
-                    }
-                }
             }
         });
         setVisible(true);
@@ -194,17 +200,17 @@ public class GUI extends JFrame {
         BufferedImage combined = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
         Graphics2D g2d = combined.createGraphics();
 
-        // Set white background
+        //set white background
         g2d.setColor(Color.WHITE);
         g2d.fillRect(0, 0, width, height);
 
 
-        // Paint route on top (if it exists and is visible)
+        // paint route on top if it exists
         if (generatedRoute != null) {
             component2.printAll(g2d);
         }
 
-        // Paint background map first
+        //paint bacnground first, then generated route
         component1.printAll(g2d);
 
         g2d.dispose();

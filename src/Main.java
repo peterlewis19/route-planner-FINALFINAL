@@ -8,9 +8,6 @@ public class Main {
         ArrayList<Node> unconnectedMapOfCoords = FileHandler.readNodesFromFile("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\500mapOfCoords.txt");
         int[][] edgeRelationMatrix = FileHandler.readMatrixFromFile("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\500edgeRelations.txt", unconnectedMapOfCoords.size());
 
-
-
-        //MainLoopOfGA newGA = new MainLoopOfGA();
         GUI graphics = new GUI(unconnectedMapOfCoords, edgeRelationMatrix);
     }
 

@@ -34,7 +34,7 @@ public class GeneticAlgorithm {
         int currentClosestRoute1 = 0;
         int currentClosestRoute2 = 0;
 
-        // Find closest nodes between routes (excluding endpoints)
+        //find closest nodes between routes apart from endpoints
         for (int i = 2; i < route1.size() ; i++) {
             for (int j = 2; j < route2.size() ; j++) {
                 Node node1 = unconnectedGraph.get(route1.get(i));
@@ -49,7 +49,7 @@ public class GeneticAlgorithm {
             }
         }
 
-        // Extract route segments without overlapping nodes
+        //slice segments with no overlap
         List<Integer> finalRoutePart1 = route1.subList(0, currentClosestRoute1); // Excludes connection point
         List<Integer> finalRoutePart2 = route2.subList(currentClosestRoute2 + 1, route2.size()); // Excludes connection point
 
@@ -57,7 +57,6 @@ public class GeneticAlgorithm {
         int nodeA = route1.get(currentClosestRoute1);
         int nodeB = route2.get(currentClosestRoute2);
 
-        // Generate shortest path between nodes
         List<Integer> path = createRandomRoute3(nodeA, nodeB);
 
         // Combine segments
@@ -66,19 +65,6 @@ public class GeneticAlgorithm {
         finalRoute.addAll(finalRoutePart2);
 
         return finalRoute;
-    }
-
-    public ArrayList<Integer> getValidNextNodes(int currentNode, ArrayList<Integer> visitedNodes){
-        ArrayList<Integer> validNextNodes = new ArrayList<>();
-
-        for (int i=0; i < edgeRelationshipMatrix.length; i++){
-            if (edgeRelationshipMatrix[currentNode][i] == 1 && !visitedNodes.contains(i)){
-                validNextNodes.add(i);
-            }
-        }
-
-        return validNextNodes;
-
     }
 
     public ArrayList<Integer> mutate2(ArrayList<Integer> route){
@@ -205,94 +191,7 @@ public class GeneticAlgorithm {
         return currentRoute;
     }
 
-
-
-    //for initial routes for first generation
-    // and for crossover, combining effective routes
-    // random walk is too slow for 40 nodes, even 1 takes ages
-    public ArrayList<Integer> createRandomRoute(int nodeA, int nodeB){
-        //random walk assumes that the points chosen are already connected
-        // no explicit changes to adjacencyMatrix are made
-        ArrayList<Integer> routeWalked = new ArrayList<>();
-        ArrayList<Integer> visitedNodes = new ArrayList<>();
-
-        //start at a constant index
-        routeWalked.add(nodeA);
-
-        int currentIndex = 0;
-
-        //for each step, look at adjacency Matrix, go to first available
-        //for (int i=0; i < steps; i++){
-        int count = 1;
-        while (currentIndex != nodeB){
-            //look in the row for first 1
-
-            //adds first available edge
-            for (int j=0; j < edgeRelationshipMatrix.length && !visitedNodes.contains(j); j++){
-                if (edgeRelationshipMatrix[currentIndex][j] == 1){
-                    routeWalked.add(edgeRelationshipMatrix[count][j]);
-                    currentIndex = j;
-
-                    visitedNodes.add(currentIndex);
-                }
-            }
-
-            count++;
-        }
-
-        return routeWalked;
-    }
-
-    public ArrayList<Integer> createRandomRoute2(int nodeA, int nodeB) {
-        ArrayList<Integer> routeWalked = new ArrayList<>();
-        HashSet<Integer> visitedNodes = new HashSet<>();
-        Random rand = new Random();
-
-        int currentNode = nodeA;
-        routeWalked.add(currentNode);
-        visitedNodes.add(currentNode);
-        int count = 0;
-
-        while (currentNode != nodeB) {
-            ArrayList<Integer> neighbours = new ArrayList<>();
-
-            // Collect unvisited neighbors
-            for (int j = 0; j < edgeRelationshipMatrix.length; j++) {
-                //can visit previously visited nodes if thats the only option
-                if (edgeRelationshipMatrix[currentNode][j] == 1 && !visitedNodes.contains(j)) {
-                    neighbours.add(j);
-                }
-            }
-
-            //if no neighbours available, especially if its because its already been visited
-            if (neighbours.isEmpty()) {
-                //System.out.println("is at a dead end");
-                for (int j = 0; j < edgeRelationshipMatrix.length; j++) {
-                    if (edgeRelationshipMatrix[currentNode][j] == 1 && j!=currentNode){
-                        neighbours.add(j);
-                    }
-                }
-
-                //go to previous node and make a different decision
-                //int nextNode =
-
-                // No more paths to explore
-                //System.out.println("No path found to nodeB.");
-                //break;
-            }
-
-            // Pick a random unvisited neighbor
-            int nextNode = neighbours.get(rand.nextInt(neighbours.size()));
-            routeWalked.add(nextNode);
-            visitedNodes.add(nextNode);
-            currentNode = nextNode;
-
-            count++;
-        }
-
-        return routeWalked;
-    }
-
+    //randomly walks until it reaches the destination, not visiting any node twice unless it has to
     public ArrayList<Integer> createRandomRoute3(int nodeA, int nodeB) {
         ArrayList<Integer> routeWalked = new ArrayList<>();
         HashSet<Integer> visitedNodes = new HashSet<>();
@@ -308,29 +207,23 @@ public class GeneticAlgorithm {
         while (currentNode != nodeB && steps < maxSteps) {
             ArrayList<Integer> neighbours = new ArrayList<>();
 
-            // Collect unvisited neighbors
+            // collect unvisited neighbors
             for (int j = 0; j < edgeRelationshipMatrix.length; j++) {
                 if (edgeRelationshipMatrix[currentNode][j] == 1 && !visitedNodes.contains(j)) {
                     neighbours.add(j);
                 }
             }
 
-            // If no unvisited neighbors → allow revisiting (backtracking)
+            // if no unvisited neighbors allow revisiting
             if (neighbours.isEmpty()) {
                 for (int j = 0; j < edgeRelationshipMatrix.length; j++) {
                     if (edgeRelationshipMatrix[currentNode][j] == 1 && j != currentNode) {
                         neighbours.add(j);
                     }
                 }
-
-                // If still no neighbors, graph is disconnected
-                if (neighbours.isEmpty()) {
-                    System.out.println("No path found from " + nodeA + " to " + nodeB);
-                    break;
-                }
             }
 
-            // Pick a random neighbor (visited or not)
+            // pick a random neighbor, regardless of visited or not
             int nextNode = neighbours.get(rand.nextInt(neighbours.size()));
 
             routeWalked.add(nextNode);
@@ -348,71 +241,5 @@ public class GeneticAlgorithm {
     }
 
 
-    public ArrayList<Integer> removeAllOneOffLoops(ArrayList<Integer> route){
-        //go through route, check the neighbours of each node, if that neighbour is in the route and not adjacent to the node in the route, make that connection
-        ArrayList<Integer> finalRoute = new ArrayList<>();
-        boolean cutFound = false;
-
-        for (int i=2; i < route.size()-1; i++){
-            ArrayList<Integer> possibleNeighbours = getAllNeighbours(route.get(i));
-
-            for (int j=0; j < possibleNeighbours.size(); j++){
-                //if current neighbour is not adjacent to current node within the route
-                if (!possibleNeighbours.get(j).equals(route.get(i+1)) && !possibleNeighbours.get(j).equals(route.get(i-1))){
-                    //if route contains this neighbour further on in the route, make that connection
-                    if (route.subList(i,route.size()).contains(j)){
-                        //cut array list from i to indexOf(j)
-                        ArrayList<Integer> connection = new ArrayList();
-                        connection.add(i);
-                        connection.add(route.indexOf(j));
-
-                        finalRoute.addAll(route.subList(0,i));
-                        finalRoute.addAll(connection);
-                        finalRoute.addAll(route.subList(route.indexOf(j), route.size()));
-
-                        System.out.println("stuff being removed: "+route.subList(i-1,route.indexOf(j)+1));
-                        System.out.println("replaced with: "+connection);
-
-                        cutFound = true;
-                        break;
-                    }
-                }
-            }
-
-            if (cutFound){
-                break;
-            }
-        }
-
-        if (finalRoute.isEmpty()){
-            return route;
-        }else{
-            return finalRoute;}
-    }
-
-    public void display(ArrayList<Integer> generatedRoute){
-        //Frame newFrame = new Frame();
-        //newFrame.drawFrame(unconnectedGraph, edgeRelationshipMatrix, generatedRoute);
-
-        ////GUI graphics = new GUI(unconnectedGraph, edgeRelationshipMatrix, generatedRoute);
-        GUI graphics = new GUI(unconnectedGraph, edgeRelationshipMatrix);
-        //JPanel of the route displayed after entered, otherwise setVisible = false;
-    }
-
-    public void initialiseFrame(){
-        GUI graphics = new GUI(unconnectedGraph, edgeRelationshipMatrix);
-    }
-
-    public ArrayList<Integer> getAllNeighbours(int node){
-        ArrayList<Integer> neighbours = new ArrayList<>();
-
-        for (int i=0; i < edgeRelationshipMatrix.length; i++){
-            if (edgeRelationshipMatrix[node][i] == 1){
-                neighbours.add(i);
-            }
-        }
-
-        return neighbours;
-    }
 
 }
