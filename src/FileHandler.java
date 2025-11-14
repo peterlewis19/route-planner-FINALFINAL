@@ -56,6 +56,7 @@ public class FileHandler {
     public static int[][] readMatrixFromFile(String fileName, int size){
         int[][] adjMat = new int[size][size];
         String line = "";
+        int connectionCount = 0;
 
         try (
                 FileReader fr = new FileReader(fileName);
@@ -64,12 +65,17 @@ public class FileHandler {
             line = br.readLine();
 
             int count = 0;
+            //goes until each line of the file has been parsed
             while (line != null){
                 String currentNodeConnections = line;
 
-                //gets each part of matrix individually
+                //goes through each value in the line
                 for (int i=0; i < currentNodeConnections.length()-2; i++){
                     adjMat[count][i] = Integer.parseInt(currentNodeConnections.substring(i,i+1));
+
+                    if (adjMat[count][i] == 1){
+                        connectionCount++;
+                    }
                 }
 
                 line=br.readLine();
@@ -80,6 +86,8 @@ public class FileHandler {
         catch (IOException e) {
             e.printStackTrace();
         }
+
+        //System.out.println(connectionCount/2);
 
         return adjMat;
     }

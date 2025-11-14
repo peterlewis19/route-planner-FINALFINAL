@@ -81,11 +81,11 @@ public class GeneticAlgorithm {
         int valueOfRouteGetA = route.get(a); //this is index of value in unconnected graph
         int valueOfRouteGetB = route.get(b);
 
-        finalRoute.addAll(ArrayListHelp.sliceArrayListInteger(0, a,route));
+        finalRoute.addAll(ArrayListHelp.sliceArrayList(0, a,route));
 
         ArrayList<Integer> mutatedInbetweenRoute = createRandomRoute3(valueOfRouteGetA,valueOfRouteGetB);
         finalRoute.addAll(mutatedInbetweenRoute);
-        finalRoute.addAll(ArrayListHelp.sliceArrayListInteger(b+1,route.size(), route));
+        finalRoute.addAll(ArrayListHelp.sliceArrayList(b+1,route.size(), route));
 
         return finalRoute;
     }
@@ -146,8 +146,8 @@ public class GeneticAlgorithm {
             }
         }
 
-        ArrayList<Integer> routeBeforeCutOff = ArrayListHelp.sliceArrayListInteger(0, finalStartIndex, route);// route.subList(0, finalStartIndex+1);
-        ArrayList<Integer> routeAfterCutOff = ArrayListHelp.sliceArrayListInteger(finalEndIndex, route.size(), route);//.subList(finalEndIndex+1, route.size());
+        ArrayList<Integer> routeBeforeCutOff = ArrayListHelp.sliceArrayList(0, finalStartIndex, route);// route.subList(0, finalStartIndex+1);
+        ArrayList<Integer> routeAfterCutOff = ArrayListHelp.sliceArrayList(finalEndIndex, route.size(), route);//.subList(finalEndIndex+1, route.size());
 
         ArrayList<Integer> finalRoute = new ArrayList<>();
         finalRoute.addAll(routeBeforeCutOff);

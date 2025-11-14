@@ -79,6 +79,8 @@ public class GUI extends JFrame {
                 //this takes the input from the textfields and turns them to a digit
                 System.out.println(startEntry.getText() + "," + destinationEntry.getText());
 
+                //search a file for this String, hope it finds a match, which I can then turn into an integer
+
                 //validate input is an integer
                 boolean isInt = false;
                 int startIndex = 0;
@@ -121,11 +123,12 @@ public class GUI extends JFrame {
                             ImageIO.write(
                                     screenshot,
                                     "png",
-                                    new File("C:\\Users\\Peter Lewis\\Code\\IA Research\\route-planner-FINALFINAL\\screenshot.png"));
+                                    new File("screenshot.png"));
 
                             //Printing this screenshot out
+                            //TODO: make this happen on the press of a print button
                             PrinterJob job = PrinterJob.getPrinterJob();
-                            job.setPrintable(new Printing(screenshot));
+                            /*job.setPrintable(new Printing(screenshot));
                             boolean doPrint = job.printDialog();
 
                             if (doPrint) {
@@ -135,7 +138,7 @@ public class GUI extends JFrame {
                                     // The job did not successfully
                                     // complete
                                 }
-                            }
+                            }*/
                         } catch(Exception err) {
                             err.printStackTrace();
                         }

@@ -5,11 +5,12 @@ public class MainLoopOfGA {
     public MainLoopOfGA(int START_INDEX, int END_INDEX,ArrayList<Node> unconnectedMapOfCoords,int[][] edgeRelationMatrix){
         GeneticAlgorithm ga = new GeneticAlgorithm(unconnectedMapOfCoords, edgeRelationMatrix);
 
-        int routesPerGeneration = 100;
-        int bestNofGeneration = 15;
-        int nOfGenerations = 25;
+        int routesPerGeneration = 30;
+        int bestNofGeneration = 10;
+        int nOfGenerations = 5;
 
-        ArrayList<ArrayList<Integer>> allRoutesInThisGeneration = new ArrayList<ArrayList<Integer>>();
+        //ArrayList<ArrayList<Integer>> allRoutesInThisGeneration = new ArrayList<ArrayList<Integer>>();
+        ArrayList<Integer>[] allRoutesInThisGeneration = new ArrayList[routesPerGeneration];
         ArrayList<ArrayList<Integer>> allRoutesInThisGenerationWithNoOneOffLoops = new ArrayList<ArrayList<Integer>>();
 
         //initialises routes
@@ -26,12 +27,53 @@ public class MainLoopOfGA {
             allRoutesInThisGeneration.add(routeWithNoLoops);
         }
 
+        //shortest routes by distance
         allRoutesInThisGeneration.sort(Comparator.comparingDouble(ga::evaluateFitness));
 
         //shortest N of the generation
-        ArrayList<ArrayList<Integer>> bestRoutesInGeneration = ArrayListHelp.sliceArrayList(0, bestNofGeneration, allRoutesInThisGeneration);
+        //ArrayList<ArrayList<Integer>> bestRoutesInGeneration = ArrayListHelp.sliceArrayListInteger(0, bestNofGeneration, allRoutesInThisGeneration);
+
+
+        /*
+            work out fitness score (higher is better) by getting the longest route this generation
+            and taking each other score away from the longest route length, +1, such that the longest
+            route has a 1 in however many chance of being chosen. and the shortest route has the
+            greatest chance of being chosen
+        */
+
+        int longestRouteLengthOfThisGen = (int)(ga.evaluateFitness(allRoutesInThisGeneration.getLast()));
+
+        //fitness scores placed into here, for roulette selection to occur
+        int[] fitnessScoresOfGen = new int[allRoutesInThisGeneration.size()];
+
+        // a route has a fitness score of at least 1 if they have the longest route, and a score of
+        // LONGEST - SHORTEST for the shortest route, which should have the greatest value
+        for (int i=0; i < allRoutesInThisGeneration.size(); i++){
+            fitnessScoresOfGen[i] = longestRouteLengthOfThisGen + 1 - (int)ga.evaluateFitness(allRoutesInThisGeneration.get(i));
+        }
+
+        int[] cumulativeFitnessScoresOfGen = new int[allRoutesInThisGeneration.size()];
+
+        //adds the score based on the previous value, making it cumulative
+        cumulativeFitnessScoresOfGen[0] = fitnessScoresOfGen[0];
+
+        for (int i=1; i < allRoutesInThisGeneration.size(); i++) {
+            cumulativeFitnessScoresOfGen[i] = cumulativeFitnessScoresOfGen[i - 1] + fitnessScoresOfGen[i];
+        }
 
         Random rand = new Random();
+
+        ArrayList<ArrayList<Integer>> bestRoutesInGeneration = new ArrayList<ArrayList<Integer>>();
+
+        for (int i=0; i < bestNofGeneration; i++){
+            int rouletteBall = rand.nextInt(cumulativeFitnessScoresOfGen[allRoutesInThisGeneration.size()-1]);
+
+            //binary search to find where the roulette ball can be inserted
+            //System.out.println(rouletteBall + " this was roulette Ball, and this is the max value: " + (cumulativeFitnessScoresOfGen.length-1));
+
+            int index = binarySearchForRoulette(rouletteBall, cumulativeFitnessScoresOfGen, 0, cumulativeFitnessScoresOfGen.length-1);
+            bestRoutesInGeneration.add(allRoutesInThisGeneration.get(index));
+        }
 
 
         //Main loop of the Genetic Algorithm
@@ -56,7 +98,7 @@ public class MainLoopOfGA {
                 }
             }
             Collections.sort(currentGenerationOfRoutes, Comparator.comparingDouble(ga::evaluateFitness));
-            bestRoutesInGeneration = ArrayListHelp.sliceArrayList(0, bestNofGeneration, currentGenerationOfRoutes);
+            bestRoutesInGeneration = ArrayListHelp.sliceArrayListInteger(0, bestNofGeneration, currentGenerationOfRoutes);
         }
         bestRoute = bestRoutesInGeneration.get(0);
     }
@@ -64,5 +106,28 @@ public class MainLoopOfGA {
 
     public ArrayList<Integer> getBestRoute(){
         return bestRoute;
+    }
+
+    private int binarySearchForRoulette(int rouletteBall, int[] rouletteWheel, int lowerBound, int upperBound){
+        int mid = (int)((lowerBound+upperBound)/2);
+        if (upperBound > lowerBound) {
+            mid = (int) (lowerBound + (upperBound - lowerBound) / 2);
+
+            // If the element is present at the
+            // middle itself
+            if (rouletteWheel[mid] == rouletteBall)
+                return mid;
+
+            // If element is smaller than mid, then
+            // it can only be present in left subarray
+            if (rouletteWheel[mid] > rouletteBall)
+                return binarySearchForRoulette(rouletteBall, rouletteWheel, lowerBound, mid - 1);
+
+            // Else the element can only be present
+            // in right subarray
+            return binarySearchForRoulette(rouletteBall, rouletteWheel, mid + 1, upperBound);
+        } else{
+            return mid;
+        }
     }
 }
