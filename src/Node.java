@@ -3,16 +3,10 @@ import java.util.ArrayList;
 public class Node {
     private double[] coords;
     private ArrayList<Integer> neighbours;
-    private static int iDcounter;
-    private int thisID;
-    Node next;
 
     public Node(double[] coords){
-        thisID = iDcounter;
         this.coords = coords;
         this.neighbours = new ArrayList<>();
-
-        iDcounter++;
     }
 
     public double[] getCoords(){

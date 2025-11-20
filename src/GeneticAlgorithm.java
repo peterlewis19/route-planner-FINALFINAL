@@ -1,15 +1,12 @@
 import java.util.*;
 
 public class GeneticAlgorithm {
-    private final ArrayList<ArrayList<Node>> initialPopulation;
     private final int[][] edgeRelationshipMatrix;
     private final ArrayList<Node> unconnectedGraph;
 
     public GeneticAlgorithm(ArrayList<Node> unconnectedGraph, int[][] edgeRelationshipMatrix){
         this.edgeRelationshipMatrix = edgeRelationshipMatrix;
         this.unconnectedGraph = unconnectedGraph;
-
-        initialPopulation = new ArrayList<>();
     }
 
     public double evaluateFitness(ArrayList<Integer> route){

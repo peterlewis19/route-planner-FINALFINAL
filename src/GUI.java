@@ -1,12 +1,9 @@
 import javax.imageio.ImageIO;
-import javax.print.PrintService;
-import javax.print.ServiceUI;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
-import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
@@ -114,7 +111,7 @@ public class GUI extends JFrame {
                         backgroundMap.repaint();
                         backgroundMap.setVisible(true);
 
-                        System.out.println("displaying map...");
+                        //System.out.println("displaying map...");
 
 
                         try {
@@ -170,14 +167,14 @@ public class GUI extends JFrame {
         JFrame frame = new JFrame("Input is not an integer");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        createNotanIntUI(frame);
+        createNotAnIntUI(frame);
         frame.setSize(300, 100);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }
 
     private static void createOutOfRangeUI(final JFrame frame) {
-        JPanel panel = new JPanel();
+        //JPanel panel = new JPanel();
         JLabel warningMessage = new JLabel("Input has to be between " + minIndex + " and " + (maxIndex - 2));
         warningMessage.setHorizontalAlignment(JLabel.CENTER);
         frame.add(warningMessage);
@@ -186,7 +183,7 @@ public class GUI extends JFrame {
 
     }
 
-    private static void createNotanIntUI(final JFrame frame) {
+    private static void createNotAnIntUI(final JFrame frame) {
         JPanel panel = new JPanel();
         JLabel warningMessage = new JLabel("Input must be a number, such as 1 or 23");
         warningMessage.setHorizontalAlignment(JLabel.CENTER);

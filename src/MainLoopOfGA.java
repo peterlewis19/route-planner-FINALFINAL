@@ -5,12 +5,11 @@ public class MainLoopOfGA {
     public MainLoopOfGA(int START_INDEX, int END_INDEX,ArrayList<Node> unconnectedMapOfCoords,int[][] edgeRelationMatrix){
         GeneticAlgorithm ga = new GeneticAlgorithm(unconnectedMapOfCoords, edgeRelationMatrix);
 
-        int routesPerGeneration = 30;
-        int bestNofGeneration = 10;
-        int nOfGenerations = 5;
+        int routesPerGeneration = 50;
+        int bestNofGeneration = 15;
+        int nOfGenerations = 20;
 
-        //ArrayList<ArrayList<Integer>> allRoutesInThisGeneration = new ArrayList<ArrayList<Integer>>();
-        ArrayList<Integer>[] allRoutesInThisGeneration = new ArrayList[routesPerGeneration];
+        ArrayList<ArrayList<Integer>> allRoutesInThisGeneration = new ArrayList<ArrayList<Integer>>();
         ArrayList<ArrayList<Integer>> allRoutesInThisGenerationWithNoOneOffLoops = new ArrayList<ArrayList<Integer>>();
 
         //initialises routes
@@ -69,8 +68,6 @@ public class MainLoopOfGA {
             int rouletteBall = rand.nextInt(cumulativeFitnessScoresOfGen[allRoutesInThisGeneration.size()-1]);
 
             //binary search to find where the roulette ball can be inserted
-            //System.out.println(rouletteBall + " this was roulette Ball, and this is the max value: " + (cumulativeFitnessScoresOfGen.length-1));
-
             int index = binarySearchForRoulette(rouletteBall, cumulativeFitnessScoresOfGen, 0, cumulativeFitnessScoresOfGen.length-1);
             bestRoutesInGeneration.add(allRoutesInThisGeneration.get(index));
         }
